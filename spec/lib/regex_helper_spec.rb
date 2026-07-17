@@ -25,6 +25,10 @@ RSpec.describe RegexHelper do
       expect(described_class::WHATSAPP_CHANNEL_REGEX.match?('553184455827-1593702061@g.us')).to be true
     end
 
+    it 'accepts Evolution Go newsletter JIDs' do
+      expect(described_class::WHATSAPP_CHANNEL_REGEX.match?('120363170942886188@newsletter')).to be true
+    end
+
     it 'rejects non-matching strings' do
       expect(described_class::WHATSAPP_CHANNEL_REGEX.match?('garbage')).to be false
       expect(described_class::WHATSAPP_CHANNEL_REGEX.match?('@g.us')).to be false
