@@ -92,4 +92,21 @@ RSpec.describe Api::V1::EvolutionGo::QrcodesController, type: :controller do
       controller_instance.create
     end
   end
+
+  describe '#get_qrcode_go response normalization' do
+    let(:controller_instance) { described_class.new }
+
+    it 'accepts lowercase qrcode and code keys returned by Evolution Go' do
+      response = instance_double(
+        Net::HTTPSuccess,
+        body: { data: { qrcode: 'data:image/png;base64,abc', code: 'qr-code' } }.to_json
+      )
+      allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+      allow(Net::HTTP).to receive(:get_response).and_return(response)
+
+      expect(controller_instance.send(:get_qrcode_go, 'https://go.example.com', 'instance-token')).to eq(
+        base64: 'data:image/png;base64,abc', code: 'qr-code', connected: false
+      )
+    end
+  end
 end
