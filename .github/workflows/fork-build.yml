@@ -89,6 +89,7 @@ jobs:
         run: |
           SHA_SHORT="${GH_SHA:0:7}"
           docker buildx imagetools create \
+            -t "${{ env.IMAGE_NAME }}:latest" \
             -t "${{ env.IMAGE_NAME }}:v1.0.0-evolution-go-fixes" \
             -t "${{ env.IMAGE_NAME }}:v1.0.0-evolution-go-fixes-${SHA_SHORT}" \
             $(printf '${{ env.IMAGE_NAME }}@sha256:%s ' *)
