@@ -201,9 +201,16 @@ class Messages::AudioTranscriptionService
     file_extension = attachment.extension.presence || 'ogg'
     filename = "audio.#{file_extension}"
 
+    # Model name depends on which API OPENAI_API_URL actually points to —
+    # 'whisper-1' is OpenAI-specific and 404s on OpenAI-compatible providers
+    # (e.g. Groq expects 'whisper-large-v3'). Configurable via
+    # OPENAI_TRANSCRIPTION_MODEL so switching OPENAI_API_URL to a different
+    # provider doesn't silently break transcription.
+    whisper_model = GlobalConfigService.load('OPENAI_TRANSCRIPTION_MODEL', 'whisper-1')
+
     form_data = [
       ['file', audio_file, { filename: filename }],
-      ['model', 'whisper-1']
+      ['model', whisper_model]
     ]
 
     # Only add language if detect_language returns a non-nil value
