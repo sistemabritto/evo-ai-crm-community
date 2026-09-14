@@ -24,13 +24,25 @@ module BotRuntime
         conversation_id: @conversation.display_id,
         contact_id: stable_contact_id,
         message_id: @message.id.to_s,
-        message_content: @message.content.to_s,
+        message_content: resolved_message_content,
         api_key: @agent_bot.api_key.to_s,
         outgoing_url: @agent_bot.outgoing_url.to_s,
         bot_config: build_bot_config,
         postback_url: build_postback_url,
         metadata: build_metadata
       }
+    end
+
+    # Audio messages never populate message.content — the transcription
+    # (Messages::AudioTranscriptionService) writes to
+    # attachment.meta['transcribed_text'] instead. Without this fallback,
+    # every voice note reaches the agent bot with an empty message_content,
+    # even when transcription succeeded and the text is sitting right there.
+    def resolved_message_content
+      text = @message.content.to_s
+      return text if text.present?
+
+      @message.attachments.to_a.filter_map { |att| att.meta&.[]('transcribed_text').presence }.first.to_s
     end
 
     def build_bot_config

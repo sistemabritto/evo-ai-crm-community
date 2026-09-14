@@ -474,6 +474,12 @@
   locked: false
   description: 'Automatically transcribe incoming audio messages using OpenAI Whisper API'
   type: boolean
+- name: OPENAI_TRANSCRIPTION_MODEL
+  display_title: 'Audio Transcription Model'
+  value: 'whisper-1'
+  locked: false
+  description: 'Model name sent to OPENAI_API_URL for audio transcription. "whisper-1" is the OpenAI name — OpenAI-compatible providers use different names (e.g. Groq: "whisper-large-v3"). Must match whatever OPENAI_API_URL points to.'
+  type: boolean
 - name: OPENAI_PROMPT_REPLY
   display_title: 'OpenAI Reply Suggestion Prompt'
   value: 'Please suggest a reply to the following conversation between support agents and customer. Don''t expose that you are an AI model, respond "Couldn''t generate the reply" in cases where you can''t answer. Reply in the user''s language.'
